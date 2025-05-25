@@ -1,14 +1,20 @@
 // ==UserScript==
 // @name         Enhanced Unround Everything Everywhere
 // @namespace    RM
-// @version      3.1.0
+// @version      3.1.2
 // @description  Advanced script to force zero border-radius and disable clipping/masking with improved performance and site coverage. Fix for Discord status indicators.
 // @license      CC0 - Public Domain
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_xmlhttpRequest
+// @grant        GM_registerMenuCommand
+// @grant        GM_notification
+// @grant        GM_info
 // @run-at       document-start
 // @match        *://*/*
+// @downloadURL  https://raw.githubusercontent.com/ODRise/URE/main/enhanced-unround-everything.user.js
+// @updateURL    https://raw.githubusercontent.com/ODRise/URE/main/enhanced-unround-everything.user.js
 // ==/UserScript==
 
 (function() {
@@ -331,7 +337,7 @@
 
         // Google Services
         google: {
-            domains: ['google.com', 'gmail.com', 'youtube.com', 'drive.google.com', 'photos.google.com', 'googleusercontent.com'],
+            domains: ['google.com', 'gmail.com', 'googleusercontent.com/youtube.com/0', 'drive.google.com', 'googleusercontent.com/photos.google.com/1', 'googleusercontent.com'],
             css: `
                 /* Google profile pictures */
                 img.gb_Ia, img[aria-label*="Profile picture" i], /* Common Google profile picture selectors */
@@ -384,7 +390,7 @@
 
         // Entertainment
         spotify: {
-            domains: ['open.spotify.com', 'spotify.com'],
+            domains: ['open.spotify.com', 'play.spotify.com'], // Corrected domains
             css: `
                 /* Spotify comprehensive fixes for avatars and album art */
                 img[data-testid*="avatar"], figure[data-testid*="avatar"] img,
@@ -528,7 +534,7 @@
                     // More robust check: see if the target element or its children match unrounding criteria
                     const targetElement = mutation.target;
                     if (targetElement && targetElement.nodeType === 1) {
-                         if (targetElement.matches('img, svg, [style*="border-radius"], [class*="avatar"], [class*="profile"]') ||
+                        if (targetElement.matches('img, svg, [style*="border-radius"], [class*="avatar"], [class*="profile"]') ||
                             (targetElement.querySelector && targetElement.querySelector('img, svg, [style*="border-radius"], [class*="avatar"], [class*="profile"]'))) {
                             needsReapplication = true;
                         }
@@ -540,8 +546,6 @@
                 utils.log('Dynamic content change detected, reapplying styles/fixes.');
                 // Re-run specific fixes for dynamically loaded content
                 applyDynamicFixes();
-                // Potentially re-inject site-specific CSS if it's highly dynamic, though usually the global rules cover this.
-                // For extreme cases, one might consider re-injecting the full CSS, but this is often overkill.
             }
         }, 300)); // Debounce to avoid excessive calls on rapid changes
 
@@ -587,7 +591,7 @@
                  // Re-hide circles in avatars if not status dots
                 if (svg.matches(':is([class*="avatar"], [aria-label*="avatar" i], [data-testid*="avatar"])')) {
                     svg.querySelectorAll(':scope > circle:not([class*="status"]):not([class*="dot"]):not([id*="status"])').forEach(circle => {
-                         circle.style.setProperty('display', 'none', 'important');
+                        circle.style.setProperty('display', 'none', 'important');
                     });
                 }
             });
@@ -638,6 +642,11 @@
             setTimeout(handleIframes, 1000); // Handle iframes after a slight delay
         }
 
+        // Register the update check command
+        if (typeof GM_registerMenuCommand === 'function') {
+            GM_registerMenuCommand('Unround: Check for Updates', checkForUpdates, 'c');
+        }
+
         utils.log('Initialization sequence complete');
     }
 
@@ -671,13 +680,123 @@
         });
     }
 
+    // --- Update Check Functionality ---
+
+    // Function to compare semantic versions (e.g., "1.2.3")
+    // Returns:
+    //   1 if v1 > v2
+    //  -1 if v1 < v2
+    //   0 if v1 === v2
+    function compareVersions(v1, v2) {
+        const parts1 = String(v1).split('.').map(Number);
+        const parts2 = String(v2).split('.').map(Number);
+        const len = Math.max(parts1.length, parts2.length);
+
+        for (let i = 0; i < len; i++) {
+            const p1 = parts1[i] || 0;
+            const p2 = parts2[i] || 0;
+            if (p1 > p2) return 1;
+            if (p1 < p2) return -1;
+        }
+        return 0;
+    }
+
+    function checkForUpdates() {
+        utils.log('Checking for updates...');
+        const currentVersion = GM_info.script.version;
+        // Prioritize GM_info.script properties if available (e.g., from Tampermonkey)
+        const updateURL = GM_info.script.updateURL || (GM_info.scriptMetaStr && GM_info.scriptMetaStr.match(/@updateURL\s+(.*)/i) ? GM_info.scriptMetaStr.match(/@updateURL\s+(.*)/i)[1].trim() : null);
+        const downloadURL = GM_info.script.downloadURL || (GM_info.scriptMetaStr && GM_info.scriptMetaStr.match(/@downloadURL\s+(.*)/i) ? GM_info.scriptMetaStr.match(/@downloadURL\s+(.*)/i)[1].trim() : null);
+
+        if (!updateURL) {
+            const msg = 'Could not check for updates: Update URL is missing in script metadata.';
+            utils.log(msg);
+            if (typeof GM_notification === 'function') {
+                GM_notification({ text: msg, title: GM_info.script.name, timeout: 7000 });
+            } else {
+                alert(msg);
+            }
+            return;
+        }
+
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: updateURL,
+            nocache: true, // Try to bypass cache for update checks
+            onload: function(response) {
+                if (response.status >= 200 && response.status < 300) {
+                    const responseText = response.responseText;
+                    const remoteVersionMatch = responseText.match(/@version\s+([\d\.]+)/);
+
+                    if (remoteVersionMatch && remoteVersionMatch[1]) {
+                        const remoteVersion = remoteVersionMatch[1];
+                        utils.log(`Current version: ${currentVersion}, Remote version: ${remoteVersion}`);
+
+                        if (compareVersions(remoteVersion, currentVersion) > 0) {
+                            utils.log(`New version available: ${remoteVersion}`);
+                            const updateMessage = `A new version (${remoteVersion}) of ${GM_info.script.name} is available.`;
+                            if (typeof GM_notification === 'function') {
+                                GM_notification({
+                                    text: `${updateMessage} Click to go to the download page.`,
+                                    title: GM_info.script.name,
+                                    onclick: () => {
+                                        if (downloadURL) {
+                                            window.open(downloadURL, '_blank');
+                                        } else {
+                                            utils.log('Download URL not found for update.');
+                                            alert('Update available, but no download URL is configured in the script.');
+                                        }
+                                    },
+                                    timeout: 0 // Persist until clicked or dismissed by user
+                                });
+                            } else if (confirm(`${updateMessage}\n\nGo to download page?`)) {
+                                if (downloadURL) {
+                                    window.open(downloadURL, '_blank');
+                                } else {
+                                    utils.log('Download URL not found for update.');
+                                    alert('Update available, but no download URL is configured in the script.');
+                                }
+                            }
+                        } else {
+                            const upToDateMsg = 'Script is up to date.';
+                            utils.log(upToDateMsg);
+                            if (typeof GM_notification === 'function') {
+                                GM_notification({ text: upToDateMsg, title: GM_info.script.name, timeout: 5000 });
+                            } else {
+                                alert(upToDateMsg); // Provide feedback even if no notification API
+                            }
+                        }
+                    } else {
+                        const versionErrorMsg = 'Could not extract remote version from update URL response.';
+                        utils.log(versionErrorMsg);
+                         if (typeof GM_notification === 'function') {
+                            GM_notification({ text: versionErrorMsg, title: GM_info.script.name, timeout: 7000 });
+                        }
+                    }
+                } else {
+                    const fetchErrorMsg = `Error fetching update: ${response.status} ${response.statusText}`;
+                    utils.log(fetchErrorMsg);
+                    if (typeof GM_notification === 'function') {
+                        GM_notification({ text: fetchErrorMsg, title: GM_info.script.name, timeout: 7000 });
+                    }
+                }
+            },
+            onerror: function(error) {
+                const networkErrorMsg = 'Failed to check for updates. Network error or script blocked.';
+                utils.log(networkErrorMsg, error);
+                if (typeof GM_notification === 'function') {
+                    GM_notification({ text: `${networkErrorMsg} Check console for details.`, title: GM_info.script.name, timeout: 7000 });
+                }
+            }
+        });
+    }
+    // --- End of Update Check Functionality ---
+
     // Start the script
-    // The main `init()` call is placed to run as soon as possible,
-    // with DOMContentLoaded listeners handling cases where the DOM isn't ready yet.
     init();
 
 
-    // Expose configuration for advanced users via console (unsafeWindow)
+    // Expose configuration and update check for advanced users via console (unsafeWindow)
     if (typeof unsafeWindow !== 'undefined') {
         unsafeWindow.unroundConfig = {
             toggle: (settingKey) => {
@@ -695,13 +814,11 @@
             reapplyStyles: () => {
                 utils.log('Manually reapplying dynamic fixes...');
                 applyDynamicFixes();
-                // Optionally re-inject all CSS if needed for a hard reset
-                // const allCSS = [globalCSS, svgCSS]; /* ... gather site-specific too ... */
-                // injectCSS(utils.createCSS(allCSS));
                 utils.log('Manual reapplication complete.');
-            }
+            },
+            checkForUpdates: checkForUpdates // Expose the update check function
         };
-        utils.log('Unround config exposed to unsafeWindow.unroundConfig');
+        utils.log('Unround config exposed to unsafeWindow.unroundConfig (includes checkForUpdates)');
     }
 
 })();
