@@ -127,7 +127,7 @@
             :where(input:not([type="radio"]):not([type="checkbox"]), button, select, textarea) {
                 border-width: 1px;
                 border-style: solid;
-                border-color: currentColor; /* Ensures border color matches text color by default */
+                border-color: rgba(0, 0, 0, 0.15) !important; /* MODIFIED: Subtle dark semi-transparent border */
             }
         }
     ` : '';
@@ -322,7 +322,7 @@
         },
 
         slack: {
-            domains: ['slack.com'],
+            domains: ['slack.com'], // Note: usually app.slack.com
             css: `
                 /* Slack profile pictures */
                 img[data-qa="member_image"],
@@ -337,7 +337,7 @@
 
         // Google Services
         google: {
-            domains: ['google.com', 'gmail.com', 'googleusercontent.com/youtube.com/0', 'drive.google.com', 'googleusercontent.com/photos.google.com/1', 'googleusercontent.com'],
+            domains: ['google.com', 'gmail.com', 'youtube.com', 'drive.google.com', 'photos.google.com', 'googleusercontent.com'],
             css: `
                 /* Google profile pictures */
                 img.gb_Ia, img[aria-label*="Profile picture" i], /* Common Google profile picture selectors */
