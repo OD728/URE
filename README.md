@@ -41,7 +41,7 @@ A powerful userscript that forces zero border-radius and removes clipping/maskin
 ### Install Steps
 
 1. **Install a userscript manager** (if you haven't already)
-2. **Click to install**: [Enhanced Unround Everything.user.js](https://raw.githubusercontent.com/user/repo/main/enhanced-unround-everything.user.js)
+2. **Click to install**: [Enhanced Unround Everything.user.js](https://github.com/ODRise/URE/raw/refs/heads/main/enhanced-unround-everything.user.js)
 3. **Confirm installation** in your userscript manager
 4. **Refresh any open tabs** to apply changes
 
