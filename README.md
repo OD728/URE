@@ -1,6 +1,6 @@
 # 🔲 Enhanced Unround Everything Everywhere
 
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/user/enhanced-unround-everything)
+[![Version](https://img.shields.io/badge/version-3.1.2-blue.svg)](https://github.com/user/enhanced-unround-everything)
 [![License](https://img.shields.io/badge/license-CC0--1.0-green.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 [![Compatibility](https://img.shields.io/badge/userscript-Tampermonkey%20%7C%20Greasemonkey-orange.svg)](https://www.tampermonkey.net/)
 [![Sites](https://img.shields.io/badge/sites-50%2B-brightgreen.svg)](#supported-sites)
@@ -49,10 +49,10 @@ A powerful userscript that forces zero border-radius and removes clipping/maskin
 
 ```bash
 # Download the script
-curl -o enhanced-unround-everything.user.js https://raw.githubusercontent.com/user/repo/main/enhanced-unround-everything.user.js
+curl -o enhanced-unround-everything.user.js https://raw.githubusercontent.com/ODRise/URE/main/enhanced-unround-everything.user.js
 
 # Or clone the repository
-git clone https://github.com/user/enhanced-unround-everything.git
+git clone https://github.com/ODRise/URE.git
 ```
 
 ## 🎛️ Configuration
@@ -86,14 +86,14 @@ unsafeWindow.unroundConfig.reload();
 
 ### Available Settings
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `enableGlobalRules` | `true` | Apply universal unrounding rules |
-| `enableSiteSpecific` | `true` | Use site-specific optimizations |
-| `enableSVGFixes` | `true` | Modify SVG elements (avatars, icons) |
-| `enableDynamicObserver` | `true` | Watch for dynamically loaded content |
-| `redditCompatibilityMode` | `true` | Enhanced Reddit UI preservation |
-| `debugMode` | `false` | Enable console logging for troubleshooting |
+| Setting                 | Default | Description                                          |
+|-------------------------|---------|------------------------------------------------------|
+| `enableGlobalRules`       | `true`  | Apply universal unrounding rules                     |
+| `enableSiteSpecific`    | `true`  | Use site-specific optimizations                      |
+| `enableSVGFixes`        | `true`  | Modify SVG elements (avatars, icons)                 |
+| `enableDynamicObserver`   | `true`  | Watch for dynamically loaded content                 |
+| `redditCompatibilityMode` | `true`  | Enhanced Reddit UI preservation & specific fixes   |
+| `debugMode`             | `false` | Enable console logging for troubleshooting           |
 
 ## 🌐 Supported Sites
 
@@ -251,8 +251,8 @@ When reporting bugs, please include:
 
 ```bash
 # Clone the repository
-git clone https://github.com/user/enhanced-unround-everything.git
-cd enhanced-unround-everything
+git clone https://github.com/ODRise/URE.git
+cd URE
 
 # Install development dependencies (optional)
 npm install
@@ -263,12 +263,24 @@ npm test
 
 ## 📋 Changelog
 
-### v3.0.0 (Current)
+### v3.1.2 (2025-05-26)
+- **Config Update:** Added `redditCompatibilityMode` to user configurations (defaults to `true`) to align with documentation and provide a toggle for Reddit-specific behaviors.
+- **Site Fixes:**
+    - **Google:** Revised domain matching for Google services (YouTube, Photos) for improved accuracy.
+    - **Spotify:** Updated domain matching for Spotify, including `open.spotify.com` and the common image CDN `i.scdn.co`.
+    - **Slack:** Added `app.slack.com` to domain matching.
+- **Documentation:**
+    - Updated all placeholder GitHub URLs in README to point to the correct repository (`ODRise/URE`).
+    - Synchronized version numbers between script and README.
+    - Clarified `redditCompatibilityMode` in settings documentation.
+- **Internal:** Minor internal consistency checks.
+
+### v3.0.0
 - ✨ **50+ site configurations** with custom optimizations
 - 🚀 **Performance improvements** with selective targeting
 - 🛡️ **Enhanced preservation system** for UI elements
 - ⚙️ **Runtime configuration API** for easy customization
-- 🔧 **Reddit compatibility mode** with smart UI preservation
+- 🔧 **Initial Reddit compatibility** with smart UI preservation (implicitly, now configurable)
 - 📱 **Dynamic content support** for modern SPAs
 - 🎯 **Better error handling** and graceful fallbacks
 
@@ -291,9 +303,9 @@ You can copy, modify, and distribute this work, even for commercial purposes, wi
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/user/enhanced-unround-everything/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/user/enhanced-unround-everything/discussions)
-- **Updates**: [Releases](https://github.com/user/enhanced-unround-everything/releases)
+- **Issues**: [GitHub Issues](https://github.com/ODRise/URE/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ODRise/URE/discussions)
+- **Updates**: [Releases](https://github.com/ODRise/URE/releases)
 
 ---
 
