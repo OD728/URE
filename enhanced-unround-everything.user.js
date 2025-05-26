@@ -26,6 +26,7 @@
         enableSiteSpecific: GM_getValue('enableSiteSpecific', true),
         enableSVGFixes: GM_getValue('enableSVGFixes', true),
         enableDynamicObserver: GM_getValue('enableDynamicObserver', true),
+        redditCompatibilityMode: GM_getValue('redditCompatibilityMode', true), // Added based on README
         debugMode: GM_getValue('debugMode', false)
     };
 
@@ -322,7 +323,7 @@
         },
 
         slack: {
-            domains: ['slack.com'], // Note: usually app.slack.com
+            domains: ['slack.com', 'app.slack.com'], // Added app.slack.com
             css: `
                 /* Slack profile pictures */
                 img[data-qa="member_image"],
@@ -336,12 +337,13 @@
         },
 
         // Google Services
-        google: {
+        google: { // UPDATED DOMAINS
             domains: ['google.com', 'gmail.com', 'youtube.com', 'drive.google.com', 'photos.google.com', 'googleusercontent.com'],
             css: `
                 /* Google profile pictures */
                 img.gb_Ia, img[aria-label*="Profile picture" i], /* Common Google profile picture selectors */
                 img[src*="googleusercontent.com/a/"], /* Common URL pattern for avatars */
+                img[src*="lh3.googleusercontent.com"], /* Another common URL pattern for avatars */
                 img[jsname], img[data-src*="googleusercontent"], /* Other patterns for Google images */
                 .Xb9hP img, .VfPpkd-kBDsod img { /* Specific classes on some Google sites */
                     border-radius: 0 !important;
@@ -389,8 +391,8 @@
         },
 
         // Entertainment
-        spotify: {
-            domains: ['open.spotify.com', 'play.spotify.com'], // Corrected domains
+        spotify: { // UPDATED DOMAINS
+            domains: ['open.spotify.com', 'i.scdn.co'],
             css: `
                 /* Spotify comprehensive fixes for avatars and album art */
                 img[data-testid*="avatar"], figure[data-testid*="avatar"] img,
@@ -400,7 +402,8 @@
                 img[class*="_6fa2d5efe1456f4e"], /* Obfuscated class name, may change */
                 div[data-testid="playlist-image"] img, /* Playlist images */
                 div[data-testid="card-image"] img, /* Card images (albums, artists) */
-                img.mMx2LUixlnN_Fu45JpFB /* Another obfuscated class for album art */ {
+                img.mMx2LUixlnN_Fu45JpFB, /* Another obfuscated class for album art */
+                img[src*="i.scdn.co"] /* Images from Spotify CDN */ {
                     border-radius: 0 !important;
                     clip-path: none !important;
                 }
@@ -455,6 +458,7 @@
                 }
             `
         }
+        // Add other site configs here if needed, following the pattern
     };
 
     // CSS injection with better error handling
