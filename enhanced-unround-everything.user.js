@@ -13,8 +13,8 @@
 // @grant        GM_info
 // @run-at       document-start
 // @match        *://*/*
-// @downloadURL  https://raw.githubusercontent.com/ODRise/URE/main/enhanced-unround-everything.user.js
-// @updateURL    https://raw.githubusercontent.com/ODRise/URE/main/enhanced-unround-everything.user.js
+// @downloadURL  https://raw.githubusercontent.com/OD728/URE/main/enhanced-unround-everything.user.js
+// @updateURL    https://raw.githubusercontent.com/OD728/URE/main/enhanced-unround-everything.user.js
 // ==/UserScript==
 
 (function() {
