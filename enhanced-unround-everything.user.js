@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhanced Unround Everything Everywhere
 // @namespace    RM
-// @version      3.1.2
+// @version      1.3
 // @description  Advanced script to force zero border-radius and disable clipping/masking with improved performance and site coverage. Fix for Discord status indicators.
 // @license      CC0 - Public Domain
 // @grant        GM_addStyle
