@@ -1,5 +1,10 @@
 # 🔲 Enhanced Unround Everything Everywhere
 
+![Version](https://img.shields.io/badge/version-1.3-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Tampermonkey](https://img.shields.io/badge/Tampermonkey-compatible-brightgreen.svg)
+![Greasemonkey](https://img.shields.io/badge/Greasemonkey-compatible-brightgreen.svg)
+
 ## URE - Unrounding Elements
 
 Removes rounded corners for consistent web design.
